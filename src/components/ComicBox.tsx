@@ -49,8 +49,10 @@ const dayKo = {
   SUN: '일요일',
 };
 
+//렌더링할 아티스트 종류
 const exposeArtist = ['writer', 'painter', 'scripter'];
 
+//순위 등락 계산
 const getChangedRank = (currRank: number, pervRank: number): string => {
   const result = pervRank - currRank;
   if (result < 0) return `▼ ${result}`;
@@ -67,6 +69,7 @@ const ComicBox = ({
   schedule,
   freedEpisodeSize,
   contentsState,
+  id,
 }: ComicRankItem) => {
   return (
     <li css={comicBoxCss}>
@@ -79,7 +82,7 @@ const ComicBox = ({
           <p>{getChangedRank(currentRank, previousRank)}</p>
         </div>
         <div css={infoWrapperCss}>
-          <h3>{title}</h3>
+          <h3 data-testid={String(id)}>{title}</h3>
           <p>
             {artists
               .filter(artist => exposeArtist.includes(artist.role))
