@@ -120,7 +120,6 @@ src
 |  ├── comicsInterface.ts
 |  └── filterInterface.ts
 ├── pages
-|  ├── 404.tsx
 |  ├── api
 |  |  └── comics
 |  |     ├── drama.ts
@@ -130,6 +129,7 @@ src
 |  |  |  └── dramaComicDatas.ts
 |  |  └── romance
 |  |     └── romanceComicDatas.ts
+|  ├── 404.tsx
 |  ├── ranking.tsx
 |  ├── _app.tsx
 |  └── _document.tsx
@@ -137,7 +137,7 @@ src
 |  ├── commonStyles.ts
 |  └── globals.ts
 └── test
-   └── App.test.spec.tsx
+   └── Comic.spec.tsx
 ```
 
 <br>
