@@ -8,14 +8,15 @@
 
 - NextJS `13.4.19` => 검색 엔진 최적화가 가능하며, Mock API를 만들 수 있습니다. 부분적으로 SSR을 적용할 수 있으며, Image 최적화를 손쉽게 할 수 있습니다.
 
-- ReactJS `18.2.0` => 생산성이 좋고 Component별로 관리하여 유지보수가 편하고 가독성이 좋습니다.
+- ReactJS `18.2.0` => 생산성이 좋고 `Component`별로 관리하여 유지보수가 편하고 가독성이 좋습니다.
 
-- Emotion `11.11.1` => CSS in JS 방식이 가독성이 좋고, Styled Component방식은 Styled Element와 Component간의 구분이 모호하고(둘 다 대문자로 시작 & 하이라이팅 색 같음) 무엇보다 NextJS에서 추가적인 설정이 필요없습니다.
+- Emotion `11.11.1` => `CSS in JS` 방식이 `Component`간 스타일 관리가 편리합니다. <br> 같은 CSS in JS 라이브러리인 Styled Component 방식은 Styled Element와 Component간의 구분이 모호합니다.(**둘 다 대문자로 시작 & 하이라이팅 색 같음**) <br> 결정적으로 NextJS에서 추가적인 설정이 필요하기 때문에 설정이 필요없는 Emotion을 선택했습니다.
 
 - Typescript `5.1.6` => 타입을 강제하여 안정성 높은 프로그래밍이 가능합니다.
 
 - React-Query `3.39.3` => data fetch에 관련된 많은 기능들을 제공합니다. 직접 핸들링 하는 것 보다 생산성이 좋고 직관적입니다.
 
+- Pnpm `8.6.12` => npm 보다 설치가 빠르며, 디스크 효율이 좋습니다. 추가로 의존성 모듈을 따로 관리하여 유령 의존성 문제를 해결할 수 있습니다.
 <br>
 <br>
 
