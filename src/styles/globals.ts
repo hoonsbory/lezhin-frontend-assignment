@@ -2,7 +2,13 @@ import { css } from '@emotion/react';
 
 export const globalCss = css`
   :root {
-    --max-width: 1100px;
+    --thumbnailSize: 130px;
+    --defaultBlack: #101010;
+    --defaultButtonBgColor: #eff1f4;
+    --defaultButtonSelectedColor: #eb0026;
+    --defaultButtonHoverBgColor: #dbdee3;
+    --defaultGray: #454c55;
+    --defaultSkeletonColor: #f3f5f8;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -24,8 +30,13 @@ export const globalCss = css`
 
   html,
   body {
-    max-width: 100vw;
+    width: 100vw;
+    height: 100vh;
     overflow-x: hidden;
+    color: var(--defaultBlack);
+  }
+  body {
+    overflow-y: scroll;
   }
   a {
     color: inherit;
