@@ -3,13 +3,15 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   ComicRankApiFailResponse,
   ComicRankApiSuccessResponse,
-} from '@pages/datas/webtoonDatas';
+} from '../../../interfaces/comicsInterface';
 import dramaComicDatas from '@pages/datas/drama/dramaComicDatas';
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ComicRankApiSuccessResponse | ComicRankApiFailResponse>,
 ) {
   const page = Number(req.query.page);
-  if (isNaN(page)) res.status(500).send({ error: 'error' });
-  else res.status(200).json(dramaComicDatas[page - 1]);
+  setTimeout(() => {
+    if (isNaN(page)) res.status(500).send({ error: 'error' });
+    else res.status(200).json(dramaComicDatas[page - 1]);
+  }, 1000);
 }

@@ -1,6 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ComicRankApiFailResponse, ComicRankApiSuccessResponse } from '@pages/datas/webtoonDatas';
+import {
+  ComicRankApiFailResponse,
+  ComicRankApiSuccessResponse,
+} from '../../../interfaces/comicsInterface';
 import romanceComicDatas from '@pages/datas/romance/romanceComicDatas';
 export default async function handler(
   req: NextApiRequest,
