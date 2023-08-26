@@ -11,7 +11,7 @@ export default async function handler(
 ) {
   const page = Number(req.query.page);
   setTimeout(() => {
-    if (isNaN(page)) res.status(500).send({ error: 'error' });
+    if (isNaN(page)) res.status(500).send({ error: '잘못된 페이지입니다.' });
     else res.status(200).json(romanceComicDatas[page - 1]);
   }, 1000);
 }
