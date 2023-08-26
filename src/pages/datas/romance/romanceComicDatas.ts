@@ -1,4 +1,4 @@
-import { ComicRankApiSuccessResponse } from '../webtoonDatas';
+import { ComicRankApiSuccessResponse } from '../../../interfaces/comicsInterface';
 
 const romanceComicDatas: ComicRankApiSuccessResponse[] = [
   {
