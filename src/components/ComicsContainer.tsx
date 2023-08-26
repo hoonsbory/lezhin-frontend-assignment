@@ -1,32 +1,31 @@
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
-import { ComicRankApiSuccessResponse, ComicRankItem } from '../pages/datas/interfaces/webtoonDatas';
+import { ComicRankApiSuccessResponse, ComicRankItem } from '../interfaces/comicsInterface';
 import { css } from '@emotion/react';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
-import { useRouter } from 'next/router';
 import FilterBox from '@components/FilterBox';
+import ComicBox from '@components/ComicBox';
+import ComicSkeleton from '@components/ComicSkeleton';
+import { genreType } from '@pages/ranking';
+import { filterBtnsInfoType, filterType } from '../interfaces/filterInterface';
 
-type genreType = 'romance' | 'drama';
-export type filterType = 'scheduled' | 'completed' | 'free' | 'isPrint';
-export interface IbtnInfo {
-  text: string;
-  isSelected: boolean;
-}
-type filterBtnsInfoType = {
-  [key in filterType]: IbtnInfo;
+export const fetchComics = async (
+  page: number,
+  genre: genreType,
+): Promise<ComicRankApiSuccessResponse> => {
+  const res = await axios.get<ComicRankApiSuccessResponse>(`./api/comics/${genre}`, {
+    params: {
+      page: page,
+    },
+  });
+  res.data.data.page = page;
+
+  return res.data;
 };
 
-export interface IfilterBtns {
-  filterBtnsInfo: filterBtnsInfoType;
-  selectFilter: (filterType: filterType) => void;
-}
-
-const ComicsContainer = () => {
-  const router = useRouter();
-  const { genre } = router.query;
-  const page = useRef(1);
-  const ref = useRef<HTMLDivElement | null>(null);
+const ComicsContainer = ({ genre }: { genre: genreType }) => {
+  const targetRef = useRef<HTMLUListElement | null>(null);
   const [comics, setComics] = useState<ComicRankApiSuccessResponse[]>([]);
   const [filterBtnsInfo, setFileterBtnsInfo] = useState<filterBtnsInfoType>({
     scheduled: {
@@ -46,12 +45,15 @@ const ComicsContainer = () => {
       text: '단행본',
     },
   });
+
+  const { entry, setTarget } = useIntersectionObserver({ threshold: 0.1 });
   const filterfunc: { [key in filterType]: (data: ComicRankItem) => void } = {
     completed: data => data.contentsState === 'completed',
     scheduled: data => data.contentsState === 'scheduled',
     free: data => data.freedEpisodeSize >= 3,
     isPrint: data => data.isPrint,
   };
+
   const selectFilter = (filterType: filterType) => {
     setFileterBtnsInfo(btn => {
       if (filterType === 'completed' && btn.scheduled.isSelected) btn.scheduled.isSelected = false;
@@ -61,35 +63,48 @@ const ComicsContainer = () => {
       return { ...btn };
     });
   };
-  const { entry, setTarget } = useIntersectionObserver({});
-  const fetchComics = async (
-    page: number,
-    genre: genreType,
-  ): Promise<ComicRankApiSuccessResponse> => {
-    const res = await axios.get<ComicRankApiSuccessResponse>(`./api/comics/${genre}`, {
-      params: {
-        page: page,
-      },
-    });
-    return res.data;
-  };
 
-  const getCorrectGenre = (genre: string): genreType => {
-    if (genre === 'romance' || genre === 'drama') return genre;
-    router.push('/ranking?genre=romance', undefined, { shallow: true });
-    return 'romance';
-  };
-
-  const { data, fetchNextPage, isFetching } = useInfiniteQuery({
+  const queryOptions = {
     queryKey: 'fetchComics',
-    queryFn: ({ pageParam = page.current }) =>
-      fetchComics(pageParam, getCorrectGenre(genre as string)),
-    getNextPageParam: lastpage => {
-      if (lastpage.data.hasNext) return page.current;
+    queryFn: ({ pageParam = 1 }) => fetchComics(pageParam, genre),
+    getNextPageParam: (lastpage: ComicRankApiSuccessResponse) => {
+      if (lastpage.data.hasNext) return lastpage.data.page! + 1;
       return;
     },
-    enabled: router.isReady,
-  });
+    enabled: genre !== undefined,
+  };
+
+  const { data, fetchNextPage, isFetching, hasNextPage, refetch, remove } =
+    useInfiniteQuery(queryOptions);
+
+  const filterFetchedData = () => {
+    const selectedFilters = (Object.keys(filterBtnsInfo) as filterType[]).filter(
+      key => filterBtnsInfo[key].isSelected,
+    );
+    const currentCmoicData = data!.pages[data!.pages.length - 1].data;
+    const filteredComics = currentCmoicData.comicRankList.filter(data =>
+      selectedFilters.every(key => filterfunc[key](data)),
+    );
+    if (filteredComics.length === 0 && hasNextPage) {
+      fetchNextPage();
+      return;
+    }
+    setComics(comics => [
+      ...comics,
+      { data: { ...currentCmoicData, comicRankList: filteredComics } },
+    ]);
+  };
+
+  useLayoutEffect(() => {
+    if (data) filterFetchedData();
+  }, [data]);
+
+  useEffect(() => {
+    if (!comics) return;
+    setComics([]);
+    remove();
+    refetch();
+  }, [genre]);
 
   useEffect(() => {
     if (!data) return;
@@ -108,40 +123,30 @@ const ComicsContainer = () => {
         };
       }),
     );
-  }, [data, filterBtnsInfo]);
+  }, [filterBtnsInfo]);
 
   useEffect(() => {
-    if (comics && ref.current) setTarget(ref.current.lastElementChild!);
+    if (comics && targetRef.current) setTarget(targetRef.current.lastElementChild!);
   }, [comics]);
 
   useEffect(() => {
-    if (entry?.isIntersecting) {
-      page.current += 1;
-      fetchNextPage();
-    }
+    if (entry?.isIntersecting) fetchNextPage();
   }, [entry]);
 
   return (
     <>
       <FilterBox filterBtnsInfo={filterBtnsInfo} selectFilter={selectFilter} />
 
-      <div ref={ref}>
-        {comics.map(
-          i =>
-            i.data?.comicRankList.map((j, idx) => (
-              <div
-                key={idx}
-                css={css`
-                  width: 400px;
-                  height: 200px;
-                `}
-              >
-                {j.title}
-              </div>
-            )),
+      <ul ref={targetRef} css={css``}>
+        {comics.map(({ data }) =>
+          data.comicRankList.map(comic => <ComicBox key={comic.id} {...comic} />),
         )}
-      </div>
-      {isFetching && <div>로딩중</div>}
+      </ul>
+      {isFetching &&
+        Array(5)
+          .fill(0)
+          .map((_, idx) => <ComicSkeleton key={idx} />)}
+      {data && !hasNextPage && <h2>마지막 페이지입니다.</h2>}
     </>
   );
 };
