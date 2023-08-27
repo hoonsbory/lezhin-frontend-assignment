@@ -174,7 +174,7 @@ const ComicsContainer = ({ genre }: { genre: genreType }) => {
         Array(5)
           .fill(0)
           .map((_, idx) => <ComicSkeleton key={idx} />)}
-      {originalComics && !hasNextPage && <h2>마지막 페이지입니다.</h2>}
+      {originalComics && !hasNextPage && <h2>마지막 페이지입니다</h2>}
     </section>
   );
 };
