@@ -6,16 +6,18 @@
 
 ## :wrench: 사용 스택과 선정 이유
 
-- NextJS `13.4.19` => 검색 엔진 최적화가 가능하며, Mock API를 만들 수 있습니다. 부분적으로 SSR을 적용할 수 있으며, Image 최적화를 손쉽게 할 수 있습니다.
+- **NextJS** `13.4.19` => 검색 엔진 최적화가 가능하며, `Mock API`를 만들 수 있습니다. 부분적으로 SSR을 적용할 수 있으며, `Image` 최적화를 손쉽게 할 수 있습니다.
 
-- ReactJS `18.2.0` => 생산성이 좋고 Component별로 관리하여 유지보수가 편하고 가독성이 좋습니다.
+- **ReactJS** `18.2.0` => 생산성이 좋고 `Component`별로 관리하여 유지보수가 편하고 가독성이 좋습니다.
 
-- Emotion `11.11.1` => CSS in JS 방식이 가독성이 좋고, Styled Component방식은 Styled Element와 Component간의 구분이 모호하고(둘 다 대문자로 시작 & 하이라이팅 색 같음) 무엇보다 NextJS에서 추가적인 설정이 필요없습니다.
+- **Emotion** `11.11.1` => `CSS in JS` 방식이 `Component`간 스타일 관리가 편리합니다. <br> 같은 CSS in JS 라이브러리인 Styled Component 방식이 아닌 emotion을 선택한 이유는 아래와 같습니다.
+  - `Styled Element`와 `Component`간의 시각적 구분이 모호합니다. (**둘 다 대문자로 시작 & 하이라이팅 색 같음**)
+  - NextJS에서 추가적인 설정이 필요합니다 (**emotion은 필요하지 않음**)
+- **Typescript** `5.1.6` => 타입을 강제하여 안정성 높은 프로그래밍이 가능합니다.
 
-- Typescript `5.1.6` => 타입을 강제하여 안정성 높은 프로그래밍이 가능합니다.
+- **React-Query** `3.39.3` => data fetch에 관련된 많은 기능들을 제공합니다. 직접 핸들링 하는 것 보다 생산성이 좋고 직관적입니다.
 
-- React-Query `3.39.3` => data fetch에 관련된 많은 기능들을 제공합니다. 직접 핸들링 하는 것 보다 생산성이 좋고 직관적입니다.
-
+- **Pnpm** `8.6.12` => `npm` 보다 설치가 빠르며, 디스크 효율이 좋습니다. 추가로 의존성 모듈을 따로 관리하여 유령 의존성 문제를 해결할 수 있습니다.
 <br>
 <br>
 
@@ -40,6 +42,10 @@ data fetching은 react-query의 useInfiniteQuery로 연속적으로 페이지를
 > 필터 버튼 4개의 상태와 정보를 state로 관리합니다. 필터에 맞는 조건은 필터 키와 매핑하여 메소드로 만들었습니다. <br>
 필터 버튼이 눌리거나, 필터가 눌린 상태로 데이터가 fetch 됐을 때 필터링을 수행합니다.
 <br> 필터링을 위해 원본 데이터와 필터링된 데이터를 따로 관리합니다.
+
+### 테스트
+
+> jest와 react-testing-library를 이용하여 단위 테스트를 진행했습니다. 필터 버튼이 올바른 웹툰을 렌더링하는지, 무한스크롤이 올바른 페이지를 가져오는지 테스트할 수 있습니다.
 
 ### 기타
 
@@ -114,7 +120,6 @@ src
 |  ├── comicsInterface.ts
 |  └── filterInterface.ts
 ├── pages
-|  ├── 404.tsx
 |  ├── api
 |  |  └── comics
 |  |     ├── drama.ts
@@ -124,6 +129,7 @@ src
 |  |  |  └── dramaComicDatas.ts
 |  |  └── romance
 |  |     └── romanceComicDatas.ts
+|  ├── 404.tsx
 |  ├── ranking.tsx
 |  ├── _app.tsx
 |  └── _document.tsx
@@ -131,7 +137,7 @@ src
 |  ├── commonStyles.ts
 |  └── globals.ts
 └── test
-   └── App.test.spec.tsx
+   └── Comic.spec.tsx
 ```
 
 <br>
@@ -144,12 +150,14 @@ $ npm install
 $ npm run dev
 ```
 
-#### 접속
+### 단위 테스트
+```
+$ npm run test
+```
+
+### 접속
 
 ```
  http://localhost:3000
 ```
-
-
-
 
