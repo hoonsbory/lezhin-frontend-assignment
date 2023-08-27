@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { ComicRankItem } from '../interfaces/comicsInterface';
 import Image from 'next/image';
+import React from 'react';
 
 const comicBoxCss = css`
   list-style: none;
@@ -52,14 +53,6 @@ const dayKo = {
 //렌더링할 아티스트 종류
 const exposeArtist = ['writer', 'painter', 'scripter'];
 
-//순위 등락 계산
-const getChangedRank = (currRank: number, pervRank: number): string => {
-  const result = pervRank - currRank;
-  if (result < 0) return `▼ ${result}`;
-  else if (result > 0) return `▲ ${result}`;
-  else return '-';
-};
-
 const ComicBox = ({
   thumbnailSrc,
   currentRank,
@@ -71,6 +64,31 @@ const ComicBox = ({
   contentsState,
   id,
 }: ComicRankItem) => {
+  //순위 등락 계산
+  const getChangedRank = (): string => {
+    const result = previousRank - currentRank;
+    if (result < 0) return `▼ ${result}`;
+    else if (result > 0) return `▲ ${result}`;
+    else return '-';
+  };
+
+  //렌더링할 아티스트 가져오기
+  const getExposeArtist = () =>
+    artists
+      .filter(artist => exposeArtist.includes(artist.role))
+      .map(artist => artist.name)
+      .join(', ');
+
+  //요일 정보 가져오기
+  const getScheduleInfo = () =>
+    contentsState === 'completed'
+      ? '완결'
+      : `매주 ${schedule.periods.map(day => dayKo[day]).join(', ')} 연재`;
+
+  const exposedArtistsNames = getExposeArtist();
+  const changedRanksString = getChangedRank();
+  const scheduleInfo = getScheduleInfo();
+  console.log(123);
   return (
     <li css={comicBoxCss}>
       <div css={imageWrapperCss}>
@@ -79,26 +97,17 @@ const ComicBox = ({
       <div css={textWrapperCss}>
         <div css={rankingWrapperCss}>
           <strong>{currentRank}</strong>
-          <p>{getChangedRank(currentRank, previousRank)}</p>
+          <p>{changedRanksString}</p>
         </div>
         <div css={infoWrapperCss}>
           <h3 data-testid={String(id)}>{title}</h3>
-          <p>
-            {artists
-              .filter(artist => exposeArtist.includes(artist.role))
-              .map(artist => artist.name)
-              .join(', ')}
-          </p>
+          <p>{exposedArtistsNames}</p>
           <p>{freedEpisodeSize}화 무료</p>
-          <p>
-            {contentsState === 'completed'
-              ? '완결'
-              : `매주 ${schedule.periods.map(day => dayKo[day]).join(', ')} 연재`}
-          </p>
+          <p>{scheduleInfo}</p>
         </div>
       </div>
     </li>
   );
 };
 
-export default ComicBox;
+export default React.memo(ComicBox);

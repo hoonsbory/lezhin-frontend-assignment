@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { defaultBtnCss } from '@styles/commonStyles';
 import { IbtnInfo, IfilterBtns, filterType } from '../interfaces/filterInterface';
+import React from 'react';
 
 const buttonCss = (isSelected: boolean) => css`
   ${defaultBtnCss}
@@ -39,4 +40,4 @@ const FilterBox = ({ filterBtnsInfo, selectFilter }: IfilterBtns) => {
   );
 };
 
-export default FilterBox;
+export default React.memo(FilterBox);
