@@ -99,6 +99,7 @@ remove      : 파일을 삭제하는 작업만 수행한 경우
 네이밍 : 카멜케이스
 css : inline css 금지 , css 템플릿은 컴포넌트 상단, styled 방식 사용 x
 props : props가 한개인 경우를 제외하고 interface 생성
+함수&변수 선언 : 컴포넌트의 props나 state가 필요한 함수는 컴포넌트 내부에 선언, 그 외엔 컴포넌트 외부 상단에 선언
 ※ 기타 컨벤션은 prettier과 eslint를 따랐습니다.
 ```
 
