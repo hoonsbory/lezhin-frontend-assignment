@@ -18,14 +18,16 @@ const skeletonWrapperCss = css`
   column-gap: 10px;
 `;
 
+const arr = Array(5).fill(0);
+
 const ComicSkeleton = () => {
-  return (
-    <div css={skeletonWrapperCss}>
+  return arr.map((_, idx) => (
+    <div key={idx} css={skeletonWrapperCss}>
       <div></div>
       <div></div>
       <div></div>
     </div>
-  );
+  ));
 };
 
 export default ComicSkeleton;
