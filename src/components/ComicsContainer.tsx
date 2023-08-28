@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import { ComicRankApiSuccessResponse, ComicRankItem } from '../interfaces/comicsInterface';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
@@ -61,7 +61,7 @@ const ComicsContainer = ({ genre }: { genre: genreType }) => {
   };
 
   //필터 토글 이벤트 - 연재, 완결은 중복될 수 없어서 하나가 클릭되면 다른 하나는 disable
-  const selectFilter = (filterType: filterType) => {
+  const selectFilter = useCallback((filterType: filterType) => {
     setFileterBtnsInfo(btn => {
       if (filterType === 'completed' && btn.scheduled.isSelected) btn.scheduled.isSelected = false;
       if (filterType === 'scheduled' && btn.completed.isSelected) btn.completed.isSelected = false;
@@ -69,7 +69,7 @@ const ComicsContainer = ({ genre }: { genre: genreType }) => {
 
       return { ...btn };
     });
-  };
+  }, []);
 
   //리액트 쿼리 옵션
   const queryOptions = {
@@ -95,6 +95,8 @@ const ComicsContainer = ({ genre }: { genre: genreType }) => {
     refetch,
     remove,
   } = useInfiniteQuery(queryOptions);
+
+  const isLastPage = () => !hasNextPage && originalComics;
 
   //선택된 필터 배열 리턴
   const getSelectedFilter = () => {
@@ -170,11 +172,8 @@ const ComicsContainer = ({ genre }: { genre: genreType }) => {
           data.comicRankList.map(comic => <ComicBox key={comic.id} {...comic} />),
         )}
       </ul>
-      {isFetching &&
-        Array(5)
-          .fill(0)
-          .map((_, idx) => <ComicSkeleton key={idx} />)}
-      {originalComics && !hasNextPage && <h2>마지막 페이지입니다</h2>}
+      {isFetching && <ComicSkeleton />}
+      {isLastPage() && <h2>마지막 페이지입니다</h2>}
     </section>
   );
 };
