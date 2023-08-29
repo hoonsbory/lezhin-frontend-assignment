@@ -146,7 +146,7 @@ const ComicsContainer = ({ genre }: { genre: genreType }) => {
 
   //장르가 바뀌면 쿼리 초기화
   useEffect(() => {
-    if (!comics) return;
+    if (comics.length === 0) return;
     setComics([]);
     remove();
     refetch();
@@ -160,7 +160,10 @@ const ComicsContainer = ({ genre }: { genre: genreType }) => {
 
   //웹툰이 viewport에 들어오면 다음페이지 페치
   useEffect(() => {
-    if (entry?.isIntersecting) fetchNextPage();
+    if (entry?.isIntersecting) {
+      setTarget(undefined);
+      fetchNextPage();
+    }
   }, [entry]);
 
   return (
